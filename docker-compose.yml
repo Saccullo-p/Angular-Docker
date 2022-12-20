@@ -19,13 +19,18 @@ services:
   server:
       build:
         dockerfile: Dockerfile
-        context: ./server
+        context: ./servers
+      environment:
+      - MONGO_INITDB_DATABASE=animal_db
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass
       volumes:
-        - ./server:/app
+        - ./servers:/app
       ports:
         - 5000:5000
       networks:
       - shared-network
+
   mongo-server:
     image: mongo:latest     #Possiamo specificare 'immagine anche da qui senza usare un Dockerfile
     hostname: test_mongodb  #cambia l'hostname da mongo-server a test_mongo
@@ -39,7 +44,6 @@ services:
       - ./mongo-server/init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro    
     ports:
       - 27017:27017
-  
 
 networks:
   shared-network:
