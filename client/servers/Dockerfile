@@ -1,11 +1,18 @@
-FROM node:alpine
-#/app è la cartella che conterrà tutti i file all'interno del container
-WORKDIR '/app' 
-#Copia e installa le dipendenze, se non ci sono cambiamenti docker recupera questa immagine dalla cache
-COPY ./package.json ./   
-RUN npm install
-RUN npm i -g @angular/cli
-#A questo punto copia il restante contenuto della cartella in cui si trova il docker file (.) nella working dierctory(.)
+FROM nikolaik/python-nodejs
+#Definisce la working directory del container
+WORKDIR /app 
+RUN npm install -g nodemon
+#Copia requirements.txt e installa le dipendenze
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+#Copia tutta la cartella server
 COPY . .
-EXPOSE 4200
-CMD ["ng", "serve", "--host", "0.0.0.0", "--disable-host-check"]
+
+#Espone la porta 5000
+EXPOSE 5000
+
+#Avvia il server python
+#CMD [ "python", "./app.py" ]
+
+CMD ["nodemon", "./app.py"]
