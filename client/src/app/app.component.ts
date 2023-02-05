@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AnimalsService } from './animals.service';
 import { Animal, VettAnimal } from './animals.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
