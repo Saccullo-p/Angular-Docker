@@ -8,7 +8,7 @@ app = Flask(__name__)
 CORS(app)
 
 
-#Creo una funzione che posso riciclare ogni volta che devo accedere al DB
+# Creo una funzione che posso riciclare ogni volta che devo accedere al DB
 def get_db():
     client = MongoClient(host='test_mongodb',
                          port=27017, 
@@ -18,11 +18,11 @@ def get_db():
     db = client[os.environ["MONGO_INITDB_DATABASE"]]
     return db
 
-def get_redis(): #Ottengo un'stanza della libreria redis
+def get_redis(): # Ottengo un'istanza della libreria redis
     return redis.Redis(host=os.environ["REDIS_HOST"], port=os.environ["REDIS_PORT"], db=0)
 
-#curl -X POST -H "Content-Type: application/json"  -d '{"id": "1"}' http://localhost:5000/feedAnimal
-#curl http://localhost:5000/
+# curl -X POST -H "Content-Type: application/json"  -d '{"id": "1"}' http://localhost:5000/feedAnimal
+# curl http://localhost:5000/
 
 @app.route('/feedAnimal', methods = ['POST'])
 def feedAnimal():
