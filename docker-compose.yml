@@ -1,41 +1,12 @@
-%YAML 1.1 #<-Passa alla versione 1.1 di YAML
----
 version: '3.7'
 
-x-common-variables: # <- Crea delle variabili d'ambiente per mongo
-  &mongo-variables
-    MONGO_INITDB_DATABASE: animal_db
-    MONGO_INITDB_ROOT_USERNAME: root
-    MONGO_INITDB_ROOT_PASSWORD: pass
+#setta alcune variabili d'ambiente
+x-common-variables: &mongo-variables
+  - MONGO_INITDB_DATABASE=animal_db
+  - MONGO_INITDB_ROOT_USERNAME=root
+  - MONGO_INITDB_ROOT_PASSWORD=pass
 
-x-redis-common-variables: #<- Crea delle variabili d'ambiente per redis
-   &redis-variables 
-    REDIS_HOST: redis
-    REDIS_PORT: 6379 
-
-services: #<- Crea il redis-container
-  redis:
-    image: 'redis:latest'
-    ports:
-      - 6379:6379
-    networks:
-      - shared-network
-
-  api-server:
-    build:
-      dockerfile: Dockerfile
-      context: ./server
-    environment:
-      <<: *mongo-variables
-      <<: *redis-variables
-    
-    volumes:
-      - ./server:/app
-    ports:
-      - 5000:5000
-    networks:
-    - shared-network
-
+services:
   nginx-proxy:
     restart: always
     build:
@@ -45,7 +16,6 @@ services: #<- Crea il redis-container
       - 8080:8080
     networks:
       - shared-network
-      
   client:
       build:
         dockerfile: Dockerfile
@@ -62,7 +32,18 @@ services: #<- Crea il redis-container
         - 4200:4200
       networks:
       - shared-network
-
+  api-server:
+      build:
+        dockerfile: Dockerfile
+        context: ./server
+      environment: *mongo-variables
+      
+      volumes:
+        - ./server:/app
+      ports:
+        - 5000:5000
+      networks:
+      - shared-network
   mongo-server:
     image: mongo:latest     #Possiamo scaricare l'immagine anche da
     hostname: test_mongodb  #cambia l'hostname da mongo-server a test_mongo
